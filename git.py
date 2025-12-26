@@ -1,315 +1,277 @@
-# URL Finder Program - Using Only Basic Python Concepts
+# Dice Rolling Simulator - Basic Python
+import random
 
-def get_user_input():
-    """Get multi-line input from user."""
-    print("\n" + "="*60)
-    print("URL FINDER PROGRAM")
-    print("="*60)
-    print("Enter your text below (press Enter twice to finish):")
-    print("-" * 60)
+def show_menu():
+    """Show main menu."""
+    print("\n" + "*" * 40)
+    print("     DICE ROLLING SIMULATOR")
+    print("*" * 40)
+    print("1. Roll a single dice")
+    print("2. Roll multiple dice")
+    print("3. Play vs Computer")
+    print("4. Play Target Game")
+    print("5. Exit")
+    print("*" * 40)
+
+def roll_single_dice():
+    """Roll one dice."""
+    print("\n--- Roll Single Dice ---")
     
-    lines = []
-    empty_line_count = 0
-    
+    # Ask for dice sides
     while True:
         try:
-            line = input()
-            
-            # Check if line is empty
-            if line == "":
-                empty_line_count += 1
-                # If we have two consecutive empty lines, stop
-                if empty_line_count >= 2 and lines:
-                    break
+            sides = int(input("Enter number of sides (2-20): "))
+            if 2 <= sides <= 20:
+                break
             else:
-                empty_line_count = 0
-                lines.append(line)
-                
-        except EOFError:
-            # Handle Ctrl+D or Ctrl+Z
+                print("Please enter between 2 and 20")
+        except:
+            print("Please enter a valid number")
+    
+    # Roll the dice
+    input("\nPress Enter to roll the dice...")
+    roll = random.randint(1, sides)
+    
+    print(f"\nYou rolled: {roll}")
+    
+    # Show simple dice face
+    print("   _______")
+    if roll == 1:
+        print("  |       |")
+        print("  |   *   |")
+        print("  |_______|")
+    elif roll == 2:
+        print("  | *     |")
+        print("  |       |")
+        print("  |_____*_|")
+    elif roll == 3:
+        print("  | *     |")
+        print("  |   *   |")
+        print("  |_____*_|")
+    elif roll == 4:
+        print("  | *   * |")
+        print("  |       |")
+        print("  |_*___*_|")
+    elif roll == 5:
+        print("  | *   * |")
+        print("  |   *   |")
+        print("  |_*___*_|")
+    elif roll == 6:
+        print("  | *   * |")
+        print("  | *   * |")
+        print("  |_*___*_|")
+    else:
+        print("  |       |")
+        print(f"  |   {roll}   |")
+        print("  |_______|")
+    
+    input("\nPress Enter to continue...")
+
+def roll_multiple_dice():
+    """Roll multiple dice."""
+    print("\n--- Roll Multiple Dice ---")
+    
+    # Ask for number of dice
+    while True:
+        try:
+            num_dice = int(input("How many dice? (1-10): "))
+            if 1 <= num_dice <= 10:
+                break
+            else:
+                print("Please enter between 1 and 10")
+        except:
+            print("Please enter a valid number")
+    
+    # Ask for dice sides
+    while True:
+        try:
+            sides = int(input("Enter number of sides per dice (2-20): "))
+            if 2 <= sides <= 20:
+                break
+            else:
+                print("Please enter between 2 and 20")
+        except:
+            print("Please enter a valid number")
+    
+    # Roll all dice
+    input(f"\nPress Enter to roll {num_dice} dice...")
+    
+    rolls = []
+    total = 0
+    
+    print("\nRolling dice:", end=" ")
+    
+    for i in range(num_dice):
+        roll = random.randint(1, sides)
+        rolls.append(roll)
+        total += roll
+        print(roll, end=" ")
+    
+    print(f"\n\nIndividual rolls: {rolls}")
+    print(f"Total of all dice: {total}")
+    
+    # Check for special results
+    if num_dice == 2:
+        if rolls[0] == rolls[1]:
+            print("🎯 You got doubles!")
+        if total == 7:
+            print("✨ Lucky 7!")
+        if total == 2:
+            print("🐍 Snake eyes!")
+    
+    input("\nPress Enter to continue...")
+
+def play_vs_computer():
+    """Player vs Computer game."""
+    print("\n--- Player vs Computer ---")
+    print("First to reach 50 points wins!")
+    
+    player_score = 0
+    computer_score = 0
+    round_num = 1
+    
+    while player_score < 50 and computer_score < 50:
+        print(f"\n--- Round {round_num} ---")
+        print(f"Player: {player_score}   Computer: {computer_score}")
+        
+        # Player's turn
+        input("\nYour turn - Press Enter to roll...")
+        player_roll = random.randint(1, 6)
+        print(f"You rolled: {player_roll}")
+        player_score += player_roll
+        
+        # Computer's turn
+        print("\nComputer's turn...")
+        computer_roll = random.randint(1, 6)
+        print(f"Computer rolled: {computer_roll}")
+        computer_score += computer_roll
+        
+        round_num += 1
+        
+        if player_score >= 50 or computer_score >= 50:
             break
     
-    # Join all lines into a single string
-    text = "\n".join(lines)
-    return text
-
-def is_valid_url_character(char):
-    """Check if a character is valid in a URL."""
-    # Valid URL characters (simplified)
-    valid_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    valid_chars += "0123456789"
-    valid_chars += "-._~:/?#[]@!$&'()*+,;=%"
+    print("\n" + "=" * 40)
+    print("GAME OVER!")
+    print(f"Final Score - Player: {player_score}, Computer: {computer_score}")
     
-    return char in valid_chars
-
-def find_urls_basic(text):
-    """Find URLs in text using basic string operations only."""
-    urls_found = []
-    i = 0
-    text_length = len(text)
+    if player_score > computer_score:
+        print("🏆 YOU WIN! 🏆")
+    elif computer_score > player_score:
+        print("💻 Computer wins!")
+    else:
+        print("🤝 It's a tie!")
     
-    while i < text_length:
-        # Look for "http://" or "https://"
-        if (i + 7 < text_length and text[i:i+7] == "http://") or \
-           (i + 8 < text_length and text[i:i+8] == "https://"):
-            
-            # Determine start position
-            if text[i:i+7] == "http://":
-                start = i
-                i += 7
-            else:
-                start = i
-                i += 8
-            
-            # Collect the URL characters
-            url = text[start:i]
-            
-            # Keep adding valid URL characters
-            while i < text_length and is_valid_url_character(text[i]):
-                url += text[i]
-                i += 1
-            
-            # Check if URL ends with punctuation that shouldn't be included
-            while url and url[-1] in ".,;:!?)'\"":
-                url = url[:-1]
-                i -= 1
-            
-            if url:
-                urls_found.append(url)
+    input("\nPress Enter to continue...")
+
+def play_target_game():
+    """Try to reach target score."""
+    print("\n--- Target Game ---")
+    print("Try to reach the target score in as few rolls as possible!")
+    
+    target = random.randint(20, 50)
+    print(f"Target score: {target}")
+    
+    score = 0
+    rolls = 0
+    history = []
+    
+    while score < target:
+        print(f"\nCurrent score: {score}")
+        print(f"Still need: {target - score}")
         
-        # Look for "www."
-        elif i + 4 < text_length and text[i:i+4] == "www.":
-            start = i
-            i += 4
-            
-            # Collect the URL characters
-            url = text[start:i]
-            
-            # Keep adding valid URL characters
-            while i < text_length and is_valid_url_character(text[i]):
-                url += text[i]
-                i += 1
-            
-            # Check if URL ends with punctuation that shouldn't be included
-            while url and url[-1] in ".,;:!?)'\"":
-                url = url[:-1]
-                i -= 1
-            
-            if url:
-                urls_found.append(url)
-        else:
-            i += 1
-    
-    return urls_found
-
-def clean_urls(urls):
-    """Remove duplicates and empty URLs."""
-    cleaned = []
-    seen = set()
-    
-    for url in urls:
-        if url and url not in seen:
-            # Make sure URL starts with http:// if it starts with www.
-            if url.startswith("www.") and not url.startswith("http"):
-                url = "http://" + url
-            
-            cleaned.append(url)
-            seen.add(url)
-    
-    return cleaned
-
-def display_urls(urls, original_text):
-    """Display the found URLs."""
-    print("\n" + "="*60)
-    
-    if not urls:
-        print("RESULT: No URLs found in the text.")
-        print("="*60)
-        return
-    
-    print(f"RESULT: Found {len(urls)} URL(s)")
-    print("="*60)
-    
-    # Show each URL with its position
-    for index, url in enumerate(urls, 1):
-        print(f"\nURL #{index}:")
-        print(f"  {url}")
-        
-        # Find and show all occurrences of this URL in the text
-        positions = []
-        search_start = 0
-        
+        # Ask how many dice
         while True:
-            pos = original_text.find(url, search_start)
-            if pos == -1:
-                break
-            positions.append(pos)
-            search_start = pos + 1
+            try:
+                num_dice = int(input("How many dice to roll? (1-3): "))
+                if 1 <= num_dice <= 3:
+                    break
+                else:
+                    print("Please enter between 1 and 3")
+            except:
+                print("Please enter a valid number")
         
-        if positions:
-            print(f"  Found at position(s): {', '.join(str(p) for p in positions)}")
+        input(f"\nPress Enter to roll {num_dice} dice...")
+        
+        # Roll dice
+        roll_total = 0
+        current_rolls = []
+        
+        for i in range(num_dice):
+            roll = random.randint(1, 6)
+            current_rolls.append(roll)
+            roll_total += roll
+        
+        rolls += 1
+        score += roll_total
+        history.append(f"Roll {rolls}: {current_rolls} = {roll_total}")
+        
+        print(f"You rolled: {current_rolls}")
+        print(f"This roll: {roll_total}")
+        print(f"New total: {score}")
+        
+        if score > target:
+            print(f"\nOh no! You went over by {score - target} points!")
+            print("Game over!")
+            break
     
-    print("\n" + "="*60)
-    print("SUMMARY OF FOUND URLS:")
-    print("-" * 60)
+    if score == target:
+        print("\n🎯 PERFECT! You hit the target exactly!")
     
-    for index, url in enumerate(urls, 1):
-        # Extract domain from URL
-        domain = url
-        
-        # Remove protocol
-        if "://" in domain:
-            domain = domain.split("://")[1]
-        
-        # Remove path after domain
-        if "/" in domain:
-            domain = domain.split("/")[0]
-        
-        print(f"{index}. {domain} -> Full URL: {url}")
+    if score >= target:
+        print(f"\nYou reached {score} in {rolls} rolls")
+        print("\nYour rolls:")
+        for h in history:
+            print(f"  {h}")
+    
+    input("\nPress Enter to continue...")
 
-def show_text_with_highlights(text, urls):
-    """Show the original text with URLs highlighted."""
-    if not urls:
-        print("\nOriginal text (no URLs found):")
-        print("-" * 60)
-        print(text)
-        return
-    
-    print("\n" + "="*60)
-    print("ORIGINAL TEXT WITH URLS HIGHLIGHTED")
-    print("="*60)
-    
-    # Create a list to mark which characters are part of URLs
-    is_url_char = [False] * len(text)
-    
-    # Mark URL characters
-    for url in urls:
-        search_start = 0
-        while True:
-            pos = text.find(url, search_start)
-            if pos == -1:
-                break
-            
-            # Mark all characters in this URL
-            for i in range(pos, pos + len(url)):
-                if i < len(is_url_char):
-                    is_url_char[i] = True
-            
-            search_start = pos + 1
-    
-    # Display text with highlights
-    print("\n[URLs are shown in UPPERCASE for highlighting]")
-    print("-" * 60)
-    
-    i = 0
-    while i < len(text):
-        if is_url_char[i]:
-            # Start of a URL - collect and display in uppercase
-            url_text = ""
-            while i < len(text) and is_url_char[i]:
-                url_text += text[i].upper()  # Convert to uppercase for highlighting
-                i += 1
-            print(url_text, end="")
-        else:
-            # Normal text
-            print(text[i], end="")
-            i += 1
-    
-    print("\n" + "-" * 60)
-
-def save_to_file(urls, text, filename):
-    """Save results to a file."""
-    try:
-        with open(filename, 'w') as file:
-            file.write("="*60 + "\n")
-            file.write("URL FINDER RESULTS\n")
-            file.write("="*60 + "\n\n")
-            
-            file.write(f"Total URLs found: {len(urls)}\n\n")
-            
-            if urls:
-                file.write("URLS FOUND:\n")
-                file.write("-" * 40 + "\n")
-                for index, url in enumerate(urls, 1):
-                    file.write(f"{index}. {url}\n")
-                file.write("\n")
-            
-            file.write("ORIGINAL TEXT:\n")
-            file.write("-" * 40 + "\n")
-            file.write(text + "\n")
-            
-            if urls:
-                file.write("\nURL LOCATIONS:\n")
-                file.write("-" * 40 + "\n")
-                for url in urls:
-                    positions = []
-                    search_start = 0
-                    while True:
-                        pos = text.find(url, search_start)
-                        if pos == -1:
-                            break
-                        positions.append(str(pos))
-                        search_start = pos + 1
-                    
-                    if positions:
-                        file.write(f"{url}: positions {', '.join(positions)}\n")
-        
-        return True
-    except Exception as e:
-        print(f"Error saving file: {e}")
-        return False
+def show_stats():
+    """Show statistics."""
+    print("\n=== GAME STATISTICS ===")
+    print("1. Dice with 6 sides:")
+    print("   Average roll: 3.5")
+    print("   Most common: All equal chance")
+    print("\n2. Dice Probabilities:")
+    print("   Rolling 2 dice:")
+    print("   7 is most common (16.7%)")
+    print("   2 and 12 are least common (2.8%)")
+    print("\n3. Fun Facts:")
+    print("   - Opposite sides of a dice always add to 7")
+    print("   - The dots on dice are called 'pips'")
+    print("   - Casinos use 5 dice for craps")
 
 def main():
-    """Main program function."""
-    # Get input from user
-    text = get_user_input()
+    """Main game loop."""
+    print("Welcome to Dice Rolling Simulator!")
     
-    # Check if user entered anything
-    if not text.strip():
-        print("\n" + "!"*60)
-        print("ERROR: No text was entered!")
-        print("!"*60)
-        return
-    
-    # Find URLs using basic string operations
-    print("\n" + "-"*60)
-    print("Searching for URLs...")
-    raw_urls = find_urls_basic(text)
-    
-    # Clean the URLs (remove duplicates, add protocol if needed)
-    urls = clean_urls(raw_urls)
-    
-    # Display results
-    display_urls(urls, text)
-    
-    # Show text with highlights
-    show_text_with_highlights(text, urls)
-    
-    # Ask if user wants to save results
-    if urls:
-        print("\n" + "="*60)
-        save_option = input("Do you want to save these results to a file? (yes/no): ").strip().lower()
+    while True:
+        show_menu()
         
-        if save_option in ['yes', 'y', 'ye']:
-            filename = input("Enter filename (or press Enter for 'urls_found.txt'): ").strip()
-            
-            if not filename:
-                filename = "urls_found.txt"
-            
-            # Make sure filename ends with .txt
-            if not filename.endswith('.txt'):
-                filename += '.txt'
-            
-            if save_to_file(urls, text, filename):
-                print(f"\n✓ Results successfully saved to '{filename}'")
-            else:
-                print("\n✗ Failed to save results to file.")
-    
-    # Show final message
-    print("\n" + "="*60)
-    print("PROGRAM COMPLETED")
-    print("="*60)
+        choice = input("\nEnter your choice (1-5): ")
+        
+        if choice == '1':
+            roll_single_dice()
+        elif choice == '2':
+            roll_multiple_dice()
+        elif choice == '3':
+            play_vs_computer()
+        elif choice == '4':
+            play_target_game()
+        elif choice == '5':
+            print("\nThanks for playing! Goodbye!")
+            break
+        else:
+            print("\nInvalid choice! Please enter 1-5")
+            continue
+        
+        # Ask if user wants to see stats
+        if choice in ['1', '2', '3', '4']:
+            see_stats = input("\nWould you like to see dice statistics? (y/n): ").lower()
+            if see_stats == 'y':
+                show_stats()
+                input("\nPress Enter to continue...")
 
-# Run the program
+# Start the game
 if __name__ == "__main__":
     main()
